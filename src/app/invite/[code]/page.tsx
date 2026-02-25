@@ -20,13 +20,13 @@ export default async function InvitePage({ params }: Props) {
 
   if (!invite || !invite.trips) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
           <div className="text-5xl mb-4">❌</div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">
+          <h1 className="text-xl font-bold text-gray-800 dark:text-slate-100 mb-2">
             Invitación inválida
           </h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-slate-400">
             Este link de invitación no existe o ya expiró.
           </p>
         </div>

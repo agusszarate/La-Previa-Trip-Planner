@@ -56,23 +56,23 @@ export default function NewTripPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <div className="max-w-2xl mx-auto px-4 py-12">
         <button
           onClick={() => router.back()}
-          className="text-gray-500 hover:text-gray-700 mb-6 flex items-center gap-1 text-sm"
+          className="text-gray-500 hover:text-gray-700 dark:hover:text-slate-200 mb-6 flex items-center gap-1 text-sm"
         >
           ← Volver
         </button>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">
-          Nuevo Viaje de Ski
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+          Nuevo Viaje
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                 Nombre del viaje *
               </label>
               <input
@@ -80,13 +80,13 @@ export default function NewTripPage() {
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Ej: Ski en Bariloche 2026"
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+                placeholder="Ej: Vacaciones Mendoza 2026"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 dark:bg-slate-800 dark:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                 Destino
               </label>
               <input
@@ -96,12 +96,12 @@ export default function NewTripPage() {
                   setForm({ ...form, destination: e.target.value })
                 }
                 placeholder="Ej: Cerro Catedral, Bariloche"
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 dark:bg-slate-800 dark:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                 Descripción
               </label>
               <textarea
@@ -111,13 +111,13 @@ export default function NewTripPage() {
                 }
                 placeholder="Notas sobre el viaje..."
                 rows={3}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 dark:bg-slate-800 dark:text-white"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                   Fecha inicio
                 </label>
                 <input
@@ -126,11 +126,11 @@ export default function NewTripPage() {
                   onChange={(e) =>
                     setForm({ ...form, start_date: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 dark:bg-slate-800 dark:text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
                   Fecha fin
                 </label>
                 <input
@@ -139,7 +139,7 @@ export default function NewTripPage() {
                   onChange={(e) =>
                     setForm({ ...form, end_date: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 dark:bg-slate-800 dark:text-white"
                 />
               </div>
             </div>

@@ -63,14 +63,14 @@ export default function InviteClient({ trip, code }: Props) {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8">
           {sent ? (
             <div className="text-center">
               <div className="text-4xl mb-4">📧</div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-slate-100 mb-2">
                 ¡Revisá tu email!
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-slate-400">
                 Te enviamos un link a{" "}
                 <span className="font-medium">{email}</span>. Al hacer click,
                 te vas a unir al viaje automáticamente.
@@ -87,11 +87,11 @@ export default function InviteClient({ trip, code }: Props) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu-email@ejemplo.com"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 dark:bg-slate-800 dark:text-white"
               />
 
               {error && (
-                <p className="mt-2 text-sm text-red-600">{error}</p>
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
               )}
 
               <button

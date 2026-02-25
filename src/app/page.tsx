@@ -42,14 +42,14 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8">
           {sent ? (
             <div className="text-center">
               <div className="text-4xl mb-4">📧</div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-slate-100 mb-2">
                 ¡Revisá tu email!
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-slate-400">
                 Te enviamos un link mágico a{" "}
                 <span className="font-medium">{email}</span>
               </p>
@@ -64,7 +64,7 @@ export default function LoginPage() {
             <form onSubmit={handleLogin}>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2"
               >
                 Tu email
               </label>
@@ -75,11 +75,11 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="juan@ejemplo.com"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900 dark:bg-slate-800 dark:text-white"
               />
 
               {error && (
-                <p className="mt-2 text-sm text-red-600">{error}</p>
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
               )}
 
               <button
@@ -90,7 +90,7 @@ export default function LoginPage() {
                 {loading ? "Enviando..." : "Entrar con Magic Link"}
               </button>
 
-              <p className="mt-4 text-xs text-gray-500 text-center">
+              <p className="mt-4 text-xs text-gray-500 dark:text-slate-400 text-center">
                 Te vamos a enviar un link a tu email para iniciar sesión.
                 Sin contraseña.
               </p>
