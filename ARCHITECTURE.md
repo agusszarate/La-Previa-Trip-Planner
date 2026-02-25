@@ -1,51 +1,51 @@
-# Arquitectura del Proyecto
+# Project Architecture
 
 ## Stack
 
 - **Next.js 16** (App Router) + TypeScript + Tailwind CSS v4
-- **Supabase** (PostgreSQL + Auth con Magic Link)
-- **Nodemailer** (Gmail SMTP para emails)
-- **Cheerio** (scraping de alojamientos)
+- **Supabase** (PostgreSQL + Auth with Magic Link)
+- **Nodemailer** (Gmail SMTP for emails)
+- **Cheerio** (accommodation scraping)
 - **Vercel** (deploy) + **GitHub Actions** (cron)
 
-## Estructura de Archivos
+## File Structure
 
 ```
 src/
 ├── app/                          # Next.js App Router
 │   ├── page.tsx                  # Login (Magic Link)
-│   ├── layout.tsx                # Layout raíz con ThemeProvider
-│   ├── dashboard/page.tsx        # Lista de viajes del usuario
+│   ├── layout.tsx                # Root layout with ThemeProvider
+│   ├── dashboard/page.tsx        # User's trip list
 │   ├── trips/
-│   │   ├── new/page.tsx          # Crear nuevo viaje
-│   │   └── [id]/page.tsx         # Detalle de viaje (server component, fetch de datos)
-│   ├── invite/[code]/            # Flujo de invitación
-│   │   ├── page.tsx              # Server: valida invite y renderiza client
-│   │   └── InviteClient.tsx      # Client: login + unirse al viaje
-│   ├── auth/callback/route.ts    # Callback de Supabase Auth
-│   ├── profile/page.tsx          # Perfil del usuario
+│   │   ├── new/page.tsx          # Create new trip
+│   │   └── [id]/page.tsx         # Trip detail (server component, data fetching)
+│   ├── invite/[code]/            # Invitation flow
+│   │   ├── page.tsx              # Server: validates invite and renders client
+│   │   └── InviteClient.tsx      # Client: login + join trip
+│   ├── auth/callback/route.ts    # Supabase Auth callback
+│   ├── profile/page.tsx          # User profile
 │   └── api/
-│       ├── cron/route.ts         # Cron job: chequeo de vuelos (Kiwi API)
-│       ├── scrape/route.ts       # Scraping de Airbnb con Cheerio
-│       └── trips/invite/route.ts # Generación de links de invitación
+│       ├── cron/route.ts         # Cron job: flight checking (Kiwi API)
+│       ├── scrape/route.ts       # Airbnb scraping with Cheerio
+│       └── trips/invite/route.ts # Invite link generation
 │
 ├── components/
-│   ├── TripDetail.tsx            # Orquestador de tabs del viaje (~170 líneas)
-│   ├── ComboBuilder.tsx          # Tab "Armar Combo" (opciones por categoría)
-│   ├── Navbar.tsx                # Barra de navegación
-│   ├── ThemeProvider.tsx         # Context de dark/light mode
-│   └── trip/                     # Sub-componentes de cada tab
+│   ├── TripDetail.tsx            # Trip tab orchestrator (~170 lines)
+│   ├── ComboBuilder.tsx          # "Build Combo" tab (options by category)
+│   ├── Navbar.tsx                # Navigation bar
+│   ├── ThemeProvider.tsx         # Dark/light mode context
+│   └── trip/                     # Sub-components for each tab
 │       ├── constants.ts          # TABS, CATEGORIES, CURRENCIES, OPTION_CATEGORIES
-│       ├── ExpensesTab.tsx       # Gastos compartidos + deudas
-│       ├── MembersTab.tsx        # Miembros + invitaciones
-│       ├── AccommodationsTab.tsx # Alojamientos + scraping
-│       ├── FlightsTab.tsx        # Alertas de vuelos
-│       ├── ChecklistTab.tsx      # Lista de items asignables
-│       └── PreviewTab.tsx        # Preview interactivo del combo
+│       ├── ExpensesTab.tsx       # Shared expenses + debts
+│       ├── MembersTab.tsx        # Members + invitations
+│       ├── AccommodationsTab.tsx # Accommodations + scraping
+│       ├── FlightsTab.tsx        # Flight alerts
+│       ├── ChecklistTab.tsx      # Assignable item checklist
+│       └── PreviewTab.tsx        # Interactive combo preview
 │
 ├── lib/
-│   ├── types.ts                  # Interfaces y tipos TypeScript
-│   ├── debts.ts                  # Algoritmo de simplificación de deudas
+│   ├── types.ts                  # TypeScript interfaces and types
+│   ├── debts.ts                  # Debt simplification algorithm (min-cash-flow)
 │   ├── email.ts                  # Nodemailer config + templates
 │   ├── utils.ts                  # nanoid, formatMoney, formatDate, getInitials
 │   └── supabase/
@@ -54,35 +54,45 @@ src/
 │       └── middleware.ts         # Session management
 │
 ├── middleware.ts                 # Next.js middleware (session refresh)
-└── proxy.ts                      # Proxy para middleware
+└── proxy.ts                      # Middleware proxy
 
 scripts/
-├── 001-schema.sql                # Schema completo de la DB (para deploys nuevos)
-└── 002-rename-skipass.sql        # Migración: skipass → entradas
+├── 001-schema.sql                # Complete DB schema (for fresh deploys)
+├── 002-rename-skipass.sql        # Migration: skipass → tickets
+└── 003-rename-spanish-enums.sql  # Migration: Spanish enum values → English
 
 .github/workflows/
-└── cron-check-flights.yml        # GitHub Action para chequeo diario de vuelos
+└── cron-check-flights.yml        # GitHub Action for daily flight checking
 ```
 
-## Convenciones
+## Conventions
 
-### Componentes
-- **Server components** en `app/` para fetch de datos
-- **Client components** (`"use client"`) para interactividad
-- Cada tab del viaje es un componente independiente en `components/trip/`
-- Constantes compartidas van en `components/trip/constants.ts`
+### Language
 
-### Base de datos
-- 11 tablas en Supabase (ver `scripts/001-schema.sql`)
-- RLS deshabilitado (app entre amigos, auth por Supabase Auth)
-- Migraciones nuevas van como `scripts/00X-descripcion.sql`
+- **Code**: All function names, variable names, enum values, comments, and documentation in **English**
+- **UI**: All user-facing strings (labels, placeholders, button text, titles) in **Spanish** (Argentine Spanish)
 
-### Autenticación
-- Magic Link vía Supabase Auth (sin contraseña)
-- Middleware actualiza la sesión en cada request
-- Invitaciones por link con código único
+### Components
 
-### Categorías
-- **Gastos**: alojamiento, transporte, comida, equipamiento, entradas, actividades, otros
-- **Opciones del combo**: alojamiento, transporte_ida, transporte_vuelta, entradas, equipamiento, comida, actividades, otros
-- **Monedas**: ARS, USD, EUR, BRL
+- **Server components** in `app/` for data fetching
+- **Client components** (`"use client"`) for interactivity
+- Each trip tab is an independent component in `components/trip/`
+- Shared constants go in `components/trip/constants.ts`
+
+### Database
+
+- 11 tables in Supabase (see `scripts/001-schema.sql`)
+- RLS disabled (app is for friends, auth handled by Supabase Auth)
+- New migrations go as `scripts/00X-description.sql`
+
+### Authentication
+
+- Magic Link via Supabase Auth (passwordless)
+- Middleware refreshes session on every request
+- Invitations via link with unique code
+
+### Categories
+
+- **Expenses**: accommodation, transport, food, gear, tickets, activities, other
+- **Combo options**: accommodation, transport_outbound, transport_return, tickets, gear, food, activities, other
+- **Currencies**: ARS, USD, EUR, BRL

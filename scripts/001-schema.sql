@@ -68,8 +68,8 @@ create table public.trip_members (
 -- 4. EXPENSES
 -- ============================================
 create type expense_category as enum (
-  'alojamiento', 'transporte', 'comida', 'equipamiento',
-  'entradas', 'actividades', 'otros'
+  'accommodation', 'transport', 'food', 'gear',
+  'tickets', 'activities', 'other'
 );
 
 create type currency_type as enum ('ARS', 'USD', 'EUR', 'BRL');
@@ -80,7 +80,7 @@ create table public.expenses (
   description text not null,
   amount numeric(12, 2) not null,
   currency currency_type default 'ARS' not null,
-  category expense_category default 'otros' not null,
+  category expense_category default 'other' not null,
   paid_by uuid references public.profiles(id) on delete set null not null,
   split_type text default 'equal' not null,
   receipt_url text,
@@ -172,8 +172,8 @@ create table public.trip_invites (
 -- 10. TRIP OPTIONS (combo builder)
 -- ============================================
 create type option_category as enum (
-  'alojamiento', 'transporte_ida', 'transporte_vuelta',
-  'entradas', 'equipamiento', 'comida', 'actividades', 'otros'
+  'accommodation', 'transport_outbound', 'transport_return',
+  'tickets', 'gear', 'food', 'activities', 'other'
 );
 
 create table public.trip_options (

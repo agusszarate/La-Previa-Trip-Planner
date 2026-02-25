@@ -41,7 +41,7 @@ export default function InviteClient({ trip, code }: Props) {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-700">
       <div className="w-full max-w-md mx-4">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-white mb-2">🎿</h1>
+          <h1 className="text-5xl font-bold text-white mb-2">🌍</h1>
           <h2 className="text-2xl font-bold text-white">
             Te invitaron a La Previa
           </h2>

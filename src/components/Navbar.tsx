@@ -29,7 +29,7 @@ export default function Navbar({ user }: NavbarProps) {
             href="/dashboard"
             className="text-xl font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2"
           >
-            🎿 La Previa
+            🌍 La Previa
           </Link>
 
           <div className="flex items-center gap-3">

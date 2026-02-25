@@ -155,7 +155,7 @@ export default function TripDetail({
           members={members}
         />
       )}
-      {activeTab === "gastos" && (
+      {activeTab === "expenses" && (
         <ExpensesTab
           expenses={expenses}
           members={members}
@@ -166,7 +166,7 @@ export default function TripDetail({
           refresh={refresh}
         />
       )}
-      {activeTab === "miembros" && (
+      {activeTab === "members" && (
         <MembersTab
           members={members}
           tripId={trip.id}
@@ -175,7 +175,7 @@ export default function TripDetail({
           refresh={refresh}
         />
       )}
-      {activeTab === "alojamiento" && (
+      {activeTab === "accommodation" && (
         <AccommodationsTab
           accommodations={accommodations}
           tripId={trip.id}
@@ -184,7 +184,7 @@ export default function TripDetail({
           refresh={refresh}
         />
       )}
-      {activeTab === "vuelos" && (
+      {activeTab === "flights" && (
         <FlightsTab
           flights={flights}
           tripId={trip.id}

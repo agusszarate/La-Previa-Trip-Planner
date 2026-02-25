@@ -5,14 +5,14 @@ import { useRouter } from "next/navigation";
 import type { TripOption, OptionCategory, TripMember } from "@/lib/types";
 
 const OPTION_CATEGORIES: { value: OptionCategory; label: string; icon: string }[] = [
-  { value: "alojamiento", label: "Alojamiento", icon: "🏠" },
-  { value: "transporte_ida", label: "Transporte (ida)", icon: "✈️" },
-  { value: "transporte_vuelta", label: "Transporte (vuelta)", icon: "🔙" },
-  { value: "entradas", label: "Entradas", icon: "🎫" },
-  { value: "equipamiento", label: "Equipamiento", icon: "🎒" },
-  { value: "comida", label: "Comida", icon: "🍕" },
-  { value: "actividades", label: "Actividades", icon: "🎯" },
-  { value: "otros", label: "Otros", icon: "📦" },
+  { value: "accommodation", label: "Alojamiento", icon: "🏠" },
+  { value: "transport_outbound", label: "Transporte (ida)", icon: "✈️" },
+  { value: "transport_return", label: "Transporte (vuelta)", icon: "🔙" },
+  { value: "tickets", label: "Entradas", icon: "🎫" },
+  { value: "gear", label: "Equipamiento", icon: "🎒" },
+  { value: "food", label: "Comida", icon: "🍕" },
+  { value: "activities", label: "Actividades", icon: "🎯" },
+  { value: "other", label: "Otros", icon: "📦" },
 ];
 
 interface Props {
@@ -32,10 +32,10 @@ export default function ComboBuilder({
 }: Props) {
   const router = useRouter();
   const [showForm, setShowForm] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<OptionCategory | "resumen">("resumen");
+  const [activeCategory, setActiveCategory] = useState<OptionCategory | "summary">("summary");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    category: "alojamiento" as OptionCategory,
+    category: "accommodation" as OptionCategory,
     name: "",
     description: "",
     url: "",
@@ -194,9 +194,9 @@ export default function ComboBuilder({
       {/* Category Tabs */}
       <div className="flex gap-1 overflow-x-auto hide-scrollbar bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-1">
         <button
-          onClick={() => setActiveCategory("resumen")}
+          onClick={() => setActiveCategory("summary")}
           className={`px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition ${
-            activeCategory === "resumen"
+            activeCategory === "summary"
               ? "bg-blue-600 text-white"
               : "text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700"
           }`}
@@ -232,7 +232,7 @@ export default function ComboBuilder({
       {!showForm ? (
         <button
           onClick={() => {
-            if (activeCategory !== "resumen") {
+            if (activeCategory !== "summary") {
               setForm({ ...form, category: activeCategory });
             }
             setShowForm(true);
@@ -344,7 +344,7 @@ export default function ComboBuilder({
       )}
 
       {/* Options by Category */}
-      {activeCategory === "resumen" ? (
+      {activeCategory === "summary" ? (
         // Show all categories
         <div className="space-y-6">
           {OPTION_CATEGORIES.map((cat) => {

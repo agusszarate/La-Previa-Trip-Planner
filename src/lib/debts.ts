@@ -75,9 +75,9 @@ export function calculateDebts(
 
         allDebts.push({
           from: debtors[i].id,
-          from_name: fromMember?.name || "Desconocido",
+          from_name: fromMember?.name || "Unknown",
           to: creditors[j].id,
-          to_name: toMember?.name || "Desconocido",
+          to_name: toMember?.name || "Unknown",
           amount: Math.round(transferAmount * 100) / 100,
           currency,
         });

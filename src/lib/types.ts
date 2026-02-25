@@ -28,13 +28,13 @@ export interface TripMember {
 }
 
 export type ExpenseCategory =
-  | "alojamiento"
-  | "transporte"
-  | "comida"
-  | "equipamiento"
-  | "entradas"
-  | "actividades"
-  | "otros";
+  | "accommodation"
+  | "transport"
+  | "food"
+  | "gear"
+  | "tickets"
+  | "activities"
+  | "other";
 
 export type CurrencyType = "ARS" | "USD" | "EUR" | "BRL";
 
@@ -113,14 +113,14 @@ export interface ChecklistItem {
 
 // Trip options (combo builder)
 export type OptionCategory =
-  | "alojamiento"
-  | "transporte_ida"
-  | "transporte_vuelta"
-  | "entradas"
-  | "equipamiento"
-  | "comida"
-  | "actividades"
-  | "otros";
+  | "accommodation"
+  | "transport_outbound"
+  | "transport_return"
+  | "tickets"
+  | "gear"
+  | "food"
+  | "activities"
+  | "other";
 
 export interface TripOption {
   id: string;

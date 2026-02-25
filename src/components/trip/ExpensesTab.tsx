@@ -29,7 +29,7 @@ export default function ExpensesTab({
     description: "",
     amount: "",
     currency: "ARS" as CurrencyType,
-    category: "otros" as ExpenseCategory,
+    category: "other" as ExpenseCategory,
     paid_by: currentUserId,
     split_type: "equal",
   });
@@ -81,7 +81,7 @@ export default function ExpensesTab({
       description: "",
       amount: "",
       currency: "ARS",
-      category: "otros",
+      category: "other",
       paid_by: currentUserId,
       split_type: "equal",
     });

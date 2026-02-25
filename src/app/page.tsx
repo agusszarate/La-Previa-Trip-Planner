@@ -35,7 +35,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-700">
       <div className="w-full max-w-md mx-4">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-white mb-2">⛷️</h1>
+          <h1 className="text-5xl font-bold text-white mb-2">🌍</h1>
           <h2 className="text-3xl font-bold text-white">La Previa</h2>
           <p className="text-blue-200 mt-2">
             Organizá tu viaje con amigos
