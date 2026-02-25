@@ -32,7 +32,7 @@ export type ExpenseCategory =
   | "transporte"
   | "comida"
   | "equipamiento"
-  | "skipass"
+  | "entradas"
   | "actividades"
   | "otros";
 
@@ -116,7 +116,7 @@ export type OptionCategory =
   | "alojamiento"
   | "transporte_ida"
   | "transporte_vuelta"
-  | "skipass"
+  | "entradas"
   | "equipamiento"
   | "comida"
   | "actividades"

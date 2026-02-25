@@ -76,13 +76,7 @@ export default async function DashboardPage() {
                 className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 hover:shadow-md transition group"
               >
                 <div className="flex items-start justify-between">
-                  <div className="text-3xl">
-                    {trip.destination?.toLowerCase().includes("bariloche")
-                      ? "🏔️"
-                      : trip.destination?.toLowerCase().includes("chapelco")
-                      ? "⛷️"
-                      : "🎿"}
-                  </div>
+                  <div className="text-3xl">🌍</div>
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
                       trip.role === "owner"

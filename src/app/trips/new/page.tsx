@@ -66,7 +66,7 @@ export default function NewTripPage() {
         </button>
 
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
-          Nuevo Viaje de Ski
+          Nuevo Viaje
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -80,7 +80,7 @@ export default function NewTripPage() {
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="Ej: Ski en Bariloche 2026"
+                placeholder="Ej: Vacaciones Mendoza 2026"
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 dark:bg-slate-800 dark:text-white"
               />
             </div>
