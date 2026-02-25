@@ -1,0 +1,16 @@
+name: Check Flight Prices
+
+on:
+  schedule:
+    # Every day at 8:00 AM and 8:00 PM UTC
+    - cron: '0 8,20 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-flights:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger flight check cron
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.APP_URL }}/api/cron?secret=${{ secrets.CRON_SECRET }}"
