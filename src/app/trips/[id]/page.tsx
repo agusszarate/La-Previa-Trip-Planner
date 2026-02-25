@@ -67,11 +67,18 @@ export default async function TripPage({ params }: Props) {
     .eq("trip_id", id)
     .order("created_at", { ascending: true });
 
+  // Get trip options (combo builder)
+  const { data: tripOptions } = await supabase
+    .from("trip_options")
+    .select("*")
+    .eq("trip_id", id)
+    .order("created_at", { ascending: true });
+
   // Check user role
   const userMember = members?.find((m) => m.user_id === user.id);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
       <Navbar user={profile} />
       <TripDetail
         trip={trip}
@@ -80,6 +87,7 @@ export default async function TripPage({ params }: Props) {
         accommodations={accommodations || []}
         flights={flights || []}
         checklist={checklist || []}
+        tripOptions={tripOptions || []}
         currentUserId={user.id}
         isOwner={userMember?.role === "owner"}
       />

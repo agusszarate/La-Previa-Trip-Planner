@@ -68,35 +68,35 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <div className="max-w-lg mx-auto px-4 py-12">
         <button
           onClick={() => router.push("/dashboard")}
-          className="text-gray-500 hover:text-gray-700 mb-6 flex items-center gap-1 text-sm"
+          className="text-gray-500 hover:text-gray-700 dark:hover:text-slate-200 mb-6 flex items-center gap-1 text-sm"
         >
           ← Volver al dashboard
         </button>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Mi Perfil</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Mi Perfil</h1>
 
         <form
           onSubmit={handleSave}
-          className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-5"
+          className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-6 space-y-5"
         >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
               Email
             </label>
             <input
               type="email"
               value={profile?.email || ""}
               disabled
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-gray-500"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
               Nombre para mostrar
             </label>
             <input
@@ -104,9 +104,9 @@ export default function ProfilePage() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Tu nombre"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 dark:bg-slate-800 dark:text-white"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
               Así te van a ver tus amigos en los viajes
             </p>
           </div>

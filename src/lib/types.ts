@@ -111,6 +111,44 @@ export interface ChecklistItem {
   profiles?: Profile;
 }
 
+// Trip options (combo builder)
+export type OptionCategory =
+  | "alojamiento"
+  | "transporte_ida"
+  | "transporte_vuelta"
+  | "skipass"
+  | "equipamiento"
+  | "comida"
+  | "actividades"
+  | "otros";
+
+export interface TripOption {
+  id: string;
+  trip_id: string;
+  category: OptionCategory;
+  name: string;
+  description: string | null;
+  url: string | null;
+  price: number | null;
+  currency: string;
+  price_per_person: number | null;
+  is_per_person: boolean;
+  image_url: string | null;
+  notes: string | null;
+  votes: string[];
+  is_selected: boolean;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface ComboSelection {
+  id: string;
+  trip_id: string;
+  user_id: string;
+  option_id: string;
+  created_at: string;
+}
+
 // Debt simplification
 export interface Debt {
   from: string;
