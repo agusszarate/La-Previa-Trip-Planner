@@ -10,6 +10,28 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // If redirecting to dashboard (default), check if user needs onboarding
+      if (next === "/dashboard") {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("display_name, email")
+            .eq("id", user.id)
+            .single();
+
+          if (profile) {
+            const emailPrefix = profile.email.split("@")[0];
+            if (!profile.display_name || profile.display_name === emailPrefix) {
+              return NextResponse.redirect(`${origin}/onboarding`);
+            }
+          }
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
