@@ -1,6 +1,6 @@
-# Ski Trip Planner ⛷️
+# La Previa 🌍
 
-Plataforma para organizar viajes de ski con amigos. Gastos compartidos, seguimiento de vuelos, alojamiento y más.
+Plataforma para organizar viajes con amigos. Gastos compartidos, seguimiento de vuelos, alojamiento y más.
 
 ## Stack
 
@@ -60,7 +60,7 @@ Configurar las variables de entorno en el dashboard de Vercel.
 ### 6. GitHub Actions (Cron)
 
 En tu repo de GitHub, agregar estos secrets:
-- `APP_URL` — URL de tu app en Vercel (ej: https://ski-trip-planner.vercel.app)
+- `APP_URL` — URL de tu app en Vercel (ej: https://la-previa.vercel.app)
 - `CRON_SECRET` — El mismo string que pusiste en `.env.local`
 
 ## Features

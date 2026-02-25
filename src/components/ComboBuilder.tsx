@@ -8,10 +8,10 @@ const OPTION_CATEGORIES: { value: OptionCategory; label: string; icon: string }[
   { value: "alojamiento", label: "Alojamiento", icon: "🏠" },
   { value: "transporte_ida", label: "Transporte (ida)", icon: "✈️" },
   { value: "transporte_vuelta", label: "Transporte (vuelta)", icon: "🔙" },
-  { value: "skipass", label: "Ski Pass", icon: "🎫" },
-  { value: "equipamiento", label: "Equipamiento", icon: "🎿" },
+  { value: "entradas", label: "Entradas", icon: "🎫" },
+  { value: "equipamiento", label: "Equipamiento", icon: "🎒" },
   { value: "comida", label: "Comida", icon: "🍕" },
-  { value: "actividades", label: "Actividades", icon: "⛷️" },
+  { value: "actividades", label: "Actividades", icon: "🎯" },
   { value: "otros", label: "Otros", icon: "📦" },
 ];
 

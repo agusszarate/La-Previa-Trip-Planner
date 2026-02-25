@@ -69,7 +69,7 @@ create table public.trip_members (
 -- ============================================
 create type expense_category as enum (
   'alojamiento', 'transporte', 'comida', 'equipamiento',
-  'skipass', 'actividades', 'otros'
+  'entradas', 'actividades', 'otros'
 );
 
 create type currency_type as enum ('ARS', 'USD', 'EUR', 'BRL');
@@ -173,7 +173,7 @@ create table public.trip_invites (
 -- ============================================
 create type option_category as enum (
   'alojamiento', 'transporte_ida', 'transporte_vuelta',
-  'skipass', 'equipamiento', 'comida', 'actividades', 'otros'
+  'entradas', 'equipamiento', 'comida', 'actividades', 'otros'
 );
 
 create table public.trip_options (
