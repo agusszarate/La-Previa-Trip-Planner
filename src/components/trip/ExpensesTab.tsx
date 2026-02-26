@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Expense, TripMember, Debt, ExpenseCategory, CurrencyType } from "@/lib/types";
+import { convertToARS, type ExchangeRates } from "@/lib/exchange-rates";
 import { CATEGORIES, CURRENCIES } from "./constants";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   currentUserId: string;
   supabase: SupabaseClient;
   refresh: () => void;
+  exchangeRates?: ExchangeRates | null;
 }
 
 export default function ExpensesTab({
@@ -23,6 +25,7 @@ export default function ExpensesTab({
   currentUserId,
   supabase,
   refresh,
+  exchangeRates,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
@@ -34,6 +37,16 @@ export default function ExpensesTab({
     split_type: "equal",
   });
   const [loading, setLoading] = useState(false);
+
+  /** Format a non-ARS debt amount with its ARS equivalent */
+  function formatDebtAmount(amount: number, currency: CurrencyType): string {
+    const formatted = amount.toLocaleString("es-AR", { minimumFractionDigits: 2 });
+    if (currency === "ARS" || !exchangeRates) return `${formatted} ${currency}`;
+    const arsAmount = convertToARS(amount, currency, exchangeRates);
+    if (arsAmount === null) return `${formatted} ${currency}`;
+    const arsFormatted = arsAmount.toLocaleString("es-AR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return `${formatted} ${currency} (~$${arsFormatted} ARS)`;
+  }
 
   async function handleAddExpense(e: React.FormEvent) {
     e.preventDefault();
@@ -72,6 +85,8 @@ export default function ExpensesTab({
         expense_id: expense.id,
         user_id: m.user_id,
         amount: Math.round(splitAmount * 100) / 100,
+        is_settled: m.user_id === form.paid_by,
+        settled_at: m.user_id === form.paid_by ? new Date().toISOString() : null,
       }));
 
       await supabase.from("expense_splits").insert(splits);
@@ -108,10 +123,7 @@ export default function ExpensesTab({
                   <strong>{d.from_name}</strong> le debe a <strong>{d.to_name}</strong>
                 </span>
                 <span className="font-semibold text-orange-700 dark:text-orange-400">
-                  {d.amount.toLocaleString("es-AR", {
-                    minimumFractionDigits: 2,
-                  })}{" "}
-                  {d.currency}
+                  {formatDebtAmount(d.amount, d.currency)}
                 </span>
               </div>
             ))}
@@ -253,11 +265,13 @@ export default function ExpensesTab({
                     const member = members.find(
                       (m) => m.user_id === split.user_id
                     );
+                    // Payer's own split is always considered settled
+                    const isSettled = split.is_settled || split.user_id === exp.paid_by;
                     return (
                       <span
                         key={split.id}
                         className={`text-xs px-2 py-0.5 rounded-full ${
-                          split.is_settled
+                          isSettled
                             ? "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400"
                             : "bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300"
                         }`}
@@ -268,7 +282,7 @@ export default function ExpensesTab({
                         {split.amount.toLocaleString("es-AR", {
                           minimumFractionDigits: 2,
                         })}
-                        {split.is_settled ? " ✓" : ""}
+                        {isSettled ? " ✓" : ""}
                       </span>
                     );
                   })}
@@ -283,7 +297,7 @@ export default function ExpensesTab({
                   await supabase.from("expenses").delete().eq("id", exp.id);
                   refresh();
                 }}
-                className="text-xs text-red-500 hover:text-red-700 transition"
+                className="cursor-pointer text-xs text-red-500 hover:text-red-700 transition"
               >
                 Eliminar
               </button>
@@ -311,10 +325,7 @@ export default function ExpensesTab({
               >
                 <span className="text-sm text-gray-700 dark:text-slate-200">
                   <strong>{d.from_name}</strong> → <strong>{d.to_name}</strong>:{" "}
-                  {d.amount.toLocaleString("es-AR", {
-                    minimumFractionDigits: 2,
-                  })}{" "}
-                  {d.currency}
+                  {formatDebtAmount(d.amount, d.currency)}
                 </span>
                 {(d.from === currentUserId || d.to === currentUserId) && (
                   <button
@@ -339,7 +350,7 @@ export default function ExpensesTab({
                       }
                       refresh();
                     }}
-                    className="text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition"
+                    className="cursor-pointer text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition"
                   >
                     Pagado ✓
                   </button>

@@ -1,12 +1,18 @@
 import type { ExpenseCategory, CurrencyType, OptionCategory } from "@/lib/types";
 
 export const TABS = [
+  { id: "info", label: "Info", icon: "ℹ️" },
   { id: "combo", label: "Armar Combo", icon: "🎯" },
   { id: "preview", label: "Preview", icon: "👁️" },
+  { id: "accommodation", label: "Alojamiento", icon: "🏠" },
+  { id: "transport", label: "Transporte", icon: "✈️" },
+  { id: "tickets", label: "Entradas", icon: "🎫" },
+  { id: "gear", label: "Equipamiento", icon: "🎒" },
+  { id: "food", label: "Comida", icon: "🍕" },
+  { id: "activities", label: "Actividades", icon: "🎯" },
+  { id: "other", label: "Otros", icon: "📦" },
   { id: "expenses", label: "Gastos", icon: "💰" },
   { id: "members", label: "Miembros", icon: "👥" },
-  { id: "accommodation", label: "Alojamiento", icon: "🏠" },
-  { id: "flights", label: "Vuelos", icon: "✈️" },
   { id: "checklist", label: "Checklist", icon: "✅" },
 ] as const;
 
@@ -20,7 +26,7 @@ export const CATEGORIES: { value: ExpenseCategory; label: string }[] = [
   { value: "other", label: "📦 Otros" },
 ];
 
-export const CURRENCIES: CurrencyType[] = ["ARS", "USD", "EUR", "BRL"];
+export const CURRENCIES: CurrencyType[] = ["ARS", "USD", "EUR", "BRL", "CLP", "UYU"];
 
 export const OPTION_CATEGORIES: { value: OptionCategory; label: string; icon: string }[] = [
   { value: "accommodation", label: "Alojamiento", icon: "🏠" },

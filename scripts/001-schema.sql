@@ -72,7 +72,7 @@ create type expense_category as enum (
   'tickets', 'activities', 'other'
 );
 
-create type currency_type as enum ('ARS', 'USD', 'EUR', 'BRL');
+create type currency_type as enum ('ARS', 'USD', 'EUR', 'BRL', 'CLP', 'UYU');
 
 create table public.expenses (
   id uuid default uuid_generate_v4() primary key,

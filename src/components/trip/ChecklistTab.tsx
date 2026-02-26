@@ -93,7 +93,7 @@ export default function ChecklistTab({
           >
             <button
               onClick={() => toggleItem(item.id, item.is_done)}
-              className="w-6 h-6 rounded-full border-2 border-gray-300 dark:border-slate-500 hover:border-blue-500 dark:hover:border-blue-400 flex items-center justify-center transition flex-shrink-0"
+              className="cursor-pointer w-6 h-6 rounded-full border-2 border-gray-300 dark:border-slate-500 hover:border-blue-500 dark:hover:border-blue-400 flex items-center justify-center transition flex-shrink-0"
             />
             <span className="flex-1 text-gray-800 dark:text-slate-200">{item.text}</span>
             {item.profiles && (
@@ -120,7 +120,7 @@ export default function ChecklistTab({
               >
                 <button
                   onClick={() => toggleItem(item.id, item.is_done)}
-                  className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0"
+                  className="cursor-pointer w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0"
                 >
                   <span className="text-white text-xs">✓</span>
                 </button>

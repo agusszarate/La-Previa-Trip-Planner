@@ -36,7 +36,7 @@ export type ExpenseCategory =
   | "activities"
   | "other";
 
-export type CurrencyType = "ARS" | "USD" | "EUR" | "BRL";
+export type CurrencyType = "ARS" | "USD" | "EUR" | "BRL" | "CLP" | "UYU";
 
 export interface Expense {
   id: string;
@@ -146,6 +146,15 @@ export interface ComboSelection {
   trip_id: string;
   user_id: string;
   option_id: string;
+  created_at: string;
+}
+
+export interface SavedCombo {
+  id: string;
+  trip_id: string;
+  name: string;
+  option_ids: string[];
+  created_by: string | null;
   created_at: string;
 }
 

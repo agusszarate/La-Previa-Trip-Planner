@@ -8,11 +8,12 @@ interface Props {
   members: TripMember[];
   tripId: string;
   isOwner: boolean;
+  currentUserId: string;
   supabase: SupabaseClient;
   refresh: () => void;
 }
 
-export default function MembersTab({ members, tripId, isOwner, supabase, refresh }: Props) {
+export default function MembersTab({ members, tripId, isOwner, currentUserId, supabase, refresh }: Props) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [inviteLink, setInviteLink] = useState("");
@@ -140,7 +141,7 @@ export default function MembersTab({ members, tripId, isOwner, supabase, refresh
                   navigator.clipboard.writeText(inviteLink);
                   alert("¡Link copiado!");
                 }}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium whitespace-nowrap"
+                className="cursor-pointer text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium whitespace-nowrap"
               >
                 Copiar
               </button>
@@ -170,15 +171,47 @@ export default function MembersTab({ members, tripId, isOwner, supabase, refresh
                 <p className="text-sm text-gray-500 dark:text-slate-400">{m.profiles?.email}</p>
               </div>
             </div>
-            <span
-              className={`text-xs px-2.5 py-1 rounded-full ${
-                m.role === "owner"
-                  ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                  : "bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300"
-              }`}
-            >
-              {m.role === "owner" ? "Organizador" : "Miembro"}
-            </span>
+            <div className="flex items-center gap-2">
+              {isOwner && m.user_id !== currentUserId ? (
+                <>
+                  <select
+                    value={m.role}
+                    onChange={async (e) => {
+                      const newRole = e.target.value;
+                      await supabase
+                        .from("trip_members")
+                        .update({ role: newRole })
+                        .eq("id", m.id);
+                      refresh();
+                    }}
+                    className="cursor-pointer text-xs px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                  >
+                    <option value="member">Miembro</option>
+                    <option value="owner">Organizador</option>
+                  </select>
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`¿Eliminar a ${m.profiles?.display_name || m.profiles?.email} del viaje?`)) return;
+                      await supabase.from("trip_members").delete().eq("id", m.id);
+                      refresh();
+                    }}
+                    className="cursor-pointer text-xs text-red-500 hover:text-red-700 transition"
+                  >
+                    Quitar
+                  </button>
+                </>
+              ) : (
+                <span
+                  className={`text-xs px-2.5 py-1 rounded-full ${
+                    m.role === "owner"
+                      ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                      : "bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300"
+                  }`}
+                >
+                  {m.role === "owner" ? "Organizador" : "Miembro"}
+                </span>
+              )}
+            </div>
           </div>
         ))}
       </div>

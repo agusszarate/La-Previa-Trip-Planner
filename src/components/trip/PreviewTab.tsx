@@ -1,15 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import type { TripOption, TripMember, OptionCategory } from "@/lib/types";
+import type { TripOption, TripMember, OptionCategory, CurrencyType } from "@/lib/types";
+import { convertToARS, type ExchangeRates } from "@/lib/exchange-rates";
 import { OPTION_CATEGORIES } from "./constants";
+
+/** Format a number according to currency conventions */
+function fmt(amount: number, currency: string = "ARS"): string {
+  if (currency === "ARS") {
+    // Pesos: no decimals, dot as thousands separator → $30.000
+    return amount.toLocaleString("es-AR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+  // Foreign currencies: 2 decimals, dot for decimals, comma for thousands → $150.67
+  return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
 interface Props {
   options: TripOption[];
   members: TripMember[];
+  exchangeRates?: ExchangeRates | null;
 }
 
-export default function PreviewTab({ options, members }: Props) {
+export default function PreviewTab({ options, members, exchangeRates }: Props) {
   const memberCount = members.length || 1;
 
   const [checked, setChecked] = useState<Set<string>>(
@@ -69,17 +81,47 @@ export default function PreviewTab({ options, members }: Props) {
                 <div>
                   <p className="text-purple-200 text-xs">Total en {currency}</p>
                   <p className="text-xl font-bold">
-                    ${vals.total.toLocaleString("es-AR", { minimumFractionDigits: 0 })}
+                    ${fmt(vals.total, currency)}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-purple-200 text-xs">Por persona</p>
                   <p className="text-xl font-bold">
-                    ${vals.perPerson.toLocaleString("es-AR", { minimumFractionDigits: 0 })}
+                    ${fmt(vals.perPerson, currency)}
                   </p>
                 </div>
               </div>
             ))}
+            {/* ARS equivalent when multiple currencies */}
+            {byCurrency.size > 1 && exchangeRates && (() => {
+              let arsTotal = 0;
+              let arsPerPerson = 0;
+              let allConverted = true;
+              for (const [currency, vals] of byCurrency) {
+                const totalConverted = convertToARS(vals.total, currency as CurrencyType, exchangeRates);
+                const ppConverted = convertToARS(vals.perPerson, currency as CurrencyType, exchangeRates);
+                if (totalConverted === null || ppConverted === null) { allConverted = false; break; }
+                arsTotal += totalConverted;
+                arsPerPerson += ppConverted;
+              }
+              if (!allConverted) return null;
+              return (
+                <div className="flex justify-between items-end pt-2 mt-2 border-t border-purple-400/30">
+                  <div>
+                    <p className="text-purple-200 text-xs">≈ Total en ARS</p>
+                    <p className="text-2xl font-bold text-yellow-300">
+                      ${fmt(arsTotal, "ARS")}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-purple-200 text-xs">≈ Por persona</p>
+                    <p className="text-2xl font-bold text-yellow-300">
+                      ${fmt(arsPerPerson, "ARS")}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         ) : (
           <p className="text-purple-200">Tildá opciones abajo para ver el total</p>
@@ -103,7 +145,7 @@ export default function PreviewTab({ options, members }: Props) {
                   <button
                     key={opt.id}
                     onClick={() => toggle(opt.id)}
-                    className={`w-full text-left rounded-xl border-2 p-4 transition ${
+                    className={`cursor-pointer w-full text-left rounded-xl border-2 p-4 transition ${
                       isChecked
                         ? "border-purple-500 bg-purple-50 dark:bg-purple-950"
                         : "border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 hover:border-gray-300 dark:hover:border-gray-600"
@@ -142,16 +184,14 @@ export default function PreviewTab({ options, members }: Props) {
                       {opt.price !== null && opt.price !== undefined && (
                         <div className="text-right flex-shrink-0">
                           <p className="font-bold text-gray-900 dark:text-white">
-                            ${opt.price.toLocaleString("es-AR")}
+                            ${fmt(opt.price, opt.currency || "ARS")}
                             <span className="text-xs font-normal text-gray-500 dark:text-slate-400 ml-1">
                               {opt.currency}
                             </span>
                           </p>
                           {!opt.is_per_person && memberCount > 1 && (
                             <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
-                              ${costPerPerson(opt).toLocaleString("es-AR", {
-                                minimumFractionDigits: 0,
-                              })}
+                              ${fmt(costPerPerson(opt), opt.currency || "ARS")}
                               /persona
                             </p>
                           )}
@@ -199,11 +239,11 @@ export default function PreviewTab({ options, members }: Props) {
                 </div>
                 <div className="text-right text-sm">
                   <span className="text-gray-900 dark:text-white font-medium">
-                    ${(opt.price || 0).toLocaleString("es-AR")} {opt.currency}
+                    ${fmt(opt.price || 0, opt.currency || "ARS")} {opt.currency}
                   </span>
                   {!opt.is_per_person && memberCount > 1 && (
                     <span className="text-gray-400 dark:text-slate-500 ml-2">
-                      (${costPerPerson(opt).toLocaleString("es-AR", { minimumFractionDigits: 0 })}/pp)
+                      (${fmt(costPerPerson(opt), opt.currency || "ARS")}/pp)
                     </span>
                   )}
                 </div>
@@ -215,10 +255,28 @@ export default function PreviewTab({ options, members }: Props) {
               <div key={currency} className="flex justify-between text-base font-bold text-gray-900 dark:text-white">
                 <span>Total {currency}</span>
                 <span>
-                  ${vals.total.toLocaleString("es-AR")} → ${vals.perPerson.toLocaleString("es-AR", { minimumFractionDigits: 0 })}/persona
+                  ${fmt(vals.total, currency)} → ${fmt(vals.perPerson, currency)}/persona
                 </span>
               </div>
             ))}
+            {byCurrency.size > 1 && exchangeRates && (() => {
+              let arsTotal = 0;
+              let arsPerPerson = 0;
+              for (const [currency, vals] of byCurrency) {
+                const tc = convertToARS(vals.total, currency as CurrencyType, exchangeRates);
+                const pc = convertToARS(vals.perPerson, currency as CurrencyType, exchangeRates);
+                if (tc !== null) arsTotal += tc;
+                if (pc !== null) arsPerPerson += pc;
+              }
+              return (
+                <div className="flex justify-between text-base font-bold text-green-700 dark:text-green-400 mt-2 pt-2 border-t border-gray-200 dark:border-slate-700">
+                  <span>≈ Total ARS</span>
+                  <span>
+                    ${fmt(arsTotal, "ARS")} → ${fmt(arsPerPerson, "ARS")}/persona
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
