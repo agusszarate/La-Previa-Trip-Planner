@@ -1,7 +1,6 @@
 import type { ExpenseCategory, CurrencyType, OptionCategory } from "@/lib/types";
 
 export const TABS = [
-  { id: "info", label: "Info", icon: "ℹ️" },
   { id: "combo", label: "Armar Combo", icon: "🎯" },
   { id: "preview", label: "Preview", icon: "👁️" },
   { id: "accommodation", label: "Alojamiento", icon: "🏠" },
@@ -12,7 +11,6 @@ export const TABS = [
   { id: "activities", label: "Actividades", icon: "🎯" },
   { id: "other", label: "Otros", icon: "📦" },
   { id: "expenses", label: "Gastos", icon: "💰" },
-  { id: "members", label: "Miembros", icon: "👥" },
   { id: "checklist", label: "Checklist", icon: "✅" },
 ] as const;
 
