@@ -105,7 +105,7 @@ export default function ExpensesTab({
                 className="flex items-center justify-between bg-white dark:bg-slate-800 rounded-lg px-4 py-2.5"
               >
                 <span className="text-sm text-gray-700 dark:text-slate-200">
-                  <strong>{d.from_name}</strong> → <strong>{d.to_name}</strong>
+                  <strong>{d.from_name}</strong> le debe a <strong>{d.to_name}</strong>
                 </span>
                 <span className="font-semibold text-orange-700 dark:text-orange-400">
                   {d.amount.toLocaleString("es-AR", {
@@ -275,20 +275,19 @@ export default function ExpensesTab({
                 </div>
               </div>
             )}
-            {exp.paid_by === currentUserId && (
-              <div className="mt-2 pt-2 border-t border-gray-100 flex gap-3">
-                <button
-                  onClick={async () => {
-                    if (!confirm("¿Eliminar este gasto?")) return;
-                    await supabase.from("expenses").delete().eq("id", exp.id);
-                    refresh();
-                  }}
-                  className="text-xs text-red-500 hover:text-red-700 transition"
-                >
-                  Eliminar
-                </button>
-              </div>
-            )}
+            <div className="mt-2 pt-2 border-t border-gray-100 flex gap-3">
+              <button
+                onClick={async () => {
+                  if (!confirm("¿Eliminar este gasto?")) return;
+                  await supabase.from("expense_splits").delete().eq("expense_id", exp.id);
+                  await supabase.from("expenses").delete().eq("id", exp.id);
+                  refresh();
+                }}
+                className="text-xs text-red-500 hover:text-red-700 transition"
+              >
+                Eliminar
+              </button>
+            </div>
           </div>
         ))}
         {expenses.length === 0 && (
