@@ -1,73 +1,74 @@
 # La Previa 🌍
 
-Plataforma para organizar viajes con amigos. Gastos compartidos, seguimiento de vuelos, alojamiento y más.
+Platform for organizing trips with friends. Shared expenses, flight tracking, accommodations, and more.
 
 ## Stack
 
-- **Frontend + API**: Next.js 15 (App Router) en Vercel
-- **Base de datos**: Supabase (PostgreSQL)
+- **Frontend + API**: Next.js 16 (App Router) on Vercel
+- **Database**: Supabase (PostgreSQL)
 - **Auth**: Supabase Magic Link
 - **Emails**: Gmail SMTP (Nodemailer)
 - **Scraping**: Cheerio
 - **Cron**: Vercel Cron + GitHub Actions
-- **Costo total**: $0
+- **Total cost**: $0
 
 ## Setup
 
 ### 1. Supabase
 
-1. Crear proyecto en [supabase.com](https://supabase.com)
-2. Ir a **SQL Editor** y ejecutar el contenido de `supabase-schema.sql`
-3. En **Authentication > URL Configuration**, agregar `http://localhost:3000/auth/callback` como redirect URL
-4. Copiar la URL del proyecto y la anon key
+1. Create a project at [supabase.com](https://supabase.com)
+2. Go to **SQL Editor** and run the contents of `scripts/001-schema.sql`
+3. In **Authentication > URL Configuration**, add `http://localhost:3000/auth/callback` as a redirect URL
+4. Copy the project URL and anon key
 
-### 2. Variables de entorno
+### 2. Environment Variables
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Completar con tus credenciales:
-- `NEXT_PUBLIC_SUPABASE_URL` — URL de tu proyecto Supabase
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Anon key de Supabase
-- `GMAIL_USER` — Tu email de Gmail
-- `GMAIL_APP_PASSWORD` — App password de Gmail (necesitás 2FA activado)
-- `CRON_SECRET` — String aleatorio para proteger el endpoint de cron
-- `KIWI_API_KEY` — (Opcional) API key de Kiwi Tequila para vuelos
+Fill in your credentials:
+- `NEXT_PUBLIC_SUPABASE_URL` — Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase anon key
+- `GMAIL_USER` — Your Gmail email
+- `GMAIL_APP_PASSWORD` — Gmail app password (requires 2FA enabled)
+- `CRON_SECRET` — Random string to protect the cron endpoint
+- `KIWI_API_KEY` — (Optional) Kiwi Tequila API key for flights
 
 ### 3. Gmail App Password
 
-1. Ir a [myaccount.google.com](https://myaccount.google.com)
-2. Seguridad > Verificación en 2 pasos (activar si no está)
-3. Contraseñas de aplicaciones > Generar nueva
-4. Copiar el password de 16 caracteres
+1. Go to [myaccount.google.com](https://myaccount.google.com)
+2. Security > 2-Step Verification (enable if not already)
+3. App passwords > Generate new
+4. Copy the 16-character password
 
-### 4. Correr en local
+### 4. Run Locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-### 5. Deploy a Vercel
+### 5. Deploy to Vercel
 
 ```bash
 npx vercel
 ```
 
-Configurar las variables de entorno en el dashboard de Vercel.
+Configure environment variables in the Vercel dashboard.
 
 ### 6. GitHub Actions (Cron)
 
-En tu repo de GitHub, agregar estos secrets:
-- `APP_URL` — URL de tu app en Vercel (ej: https://la-previa.vercel.app)
-- `CRON_SECRET` — El mismo string que pusiste en `.env.local`
+In your GitHub repo, add these secrets:
+- `APP_URL` — Your Vercel app URL (e.g., https://la-previa.vercel.app)
+- `CRON_SECRET` — Same string as in `.env.local`
 
 ## Features
 
-- **Gastos compartidos**: Cargá gastos, dividí en partes iguales, mirá quién le debe a quién
-- **Multi-moneda**: ARS, USD, EUR, BRL
-- **Miembros**: Agregá amigos por email
-- **Alojamiento**: Pegá links de Airbnb, scrapea precio automáticamente
-- **Vuelos**: Alertas de precio con chequeo diario
-- **Checklist**: Lista de cosas para llevar asignables
+- **Shared expenses**: Add expenses, split equally, see who owes whom
+- **Multi-currency**: ARS, USD, EUR, BRL
+- **Members**: Add friends by email or invite link
+- **Accommodations**: Paste Airbnb links, auto-scrape price
+- **Flights**: Price alerts with daily checking
+- **Checklist**: Assignable packing list
+- **Combo builder**: Compare and vote on trip options by category

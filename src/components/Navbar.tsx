@@ -29,13 +29,13 @@ export default function Navbar({ user }: NavbarProps) {
             href="/dashboard"
             className="text-xl font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2"
           >
-            🎿 La Previa
+            🌍 La Previa
           </Link>
 
           <div className="flex items-center gap-3">
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-700 transition"
+              className="cursor-pointer w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-700 transition"
               title={theme === "dark" ? "Modo claro" : "Modo oscuro"}
             >
               {theme === "dark" ? "☀️" : "🌙"}
@@ -48,7 +48,7 @@ export default function Navbar({ user }: NavbarProps) {
             </Link>
             <button
               onClick={handleLogout}
-              className="text-sm text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 transition"
+              className="cursor-pointer text-sm text-gray-500 dark:text-slate-500 hover:text-gray-700 dark:hover:text-slate-300 transition"
             >
               Salir
             </button>

@@ -36,12 +36,21 @@ export function calculateDebts(
     for (const expense of currencyExpenses) {
       if (!expense.expense_splits) continue;
 
-      // The payer paid the full amount, so they are owed
-      const current = balances.get(expense.paid_by) || 0;
-      balances.set(expense.paid_by, current + expense.amount);
+      // Only count unsettled splits
+      const unsettledSplits = expense.expense_splits.filter((s) => !s.is_settled);
+      if (unsettledSplits.length === 0) continue;
 
-      // Each person in the split owes their share
-      for (const split of expense.expense_splits) {
+      // The payer is owed the sum of unsettled splits (not their own)
+      const unsettledTotal = unsettledSplits
+        .filter((s) => s.user_id !== expense.paid_by)
+        .reduce((sum, s) => sum + s.amount, 0);
+
+      const current = balances.get(expense.paid_by) || 0;
+      balances.set(expense.paid_by, current + unsettledTotal);
+
+      // Each person in the unsettled splits owes their share (except the payer)
+      for (const split of unsettledSplits) {
+        if (split.user_id === expense.paid_by) continue;
         const bal = balances.get(split.user_id) || 0;
         balances.set(split.user_id, bal - split.amount);
       }
@@ -75,9 +84,9 @@ export function calculateDebts(
 
         allDebts.push({
           from: debtors[i].id,
-          from_name: fromMember?.name || "Desconocido",
+          from_name: fromMember?.name || "Unknown",
           to: creditors[j].id,
-          to_name: toMember?.name || "Desconocido",
+          to_name: toMember?.name || "Unknown",
           amount: Math.round(transferAmount * 100) / 100,
           currency,
         });

@@ -72,7 +72,7 @@ export default function ProfilePage() {
       <div className="max-w-lg mx-auto px-4 py-12">
         <button
           onClick={() => router.push("/dashboard")}
-          className="text-gray-500 hover:text-gray-700 dark:hover:text-slate-200 mb-6 flex items-center gap-1 text-sm"
+          className="cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-slate-200 mb-6 flex items-center gap-1 text-sm"
         >
           ← Volver al dashboard
         </button>
