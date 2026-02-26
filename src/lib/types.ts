@@ -38,6 +38,11 @@ export type ExpenseCategory =
 
 export type CurrencyType = "ARS" | "USD" | "EUR" | "BRL" | "CLP" | "UYU";
 
+export interface ExpensePayer {
+  user_id: string;
+  amount: number;
+}
+
 export interface Expense {
   id: string;
   trip_id: string;
@@ -46,6 +51,7 @@ export interface Expense {
   currency: CurrencyType;
   category: ExpenseCategory;
   paid_by: string;
+  payers: ExpensePayer[] | null;
   split_type: string;
   receipt_url: string | null;
   created_at: string;

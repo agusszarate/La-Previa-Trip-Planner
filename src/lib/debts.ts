@@ -1,4 +1,4 @@
-import { Expense, ExpenseSplit, Debt, CurrencyType } from "./types";
+import { Expense, ExpenseSplit, ExpensePayer, Debt, CurrencyType } from "./types";
 
 interface MemberInfo {
   id: string;
@@ -40,17 +40,29 @@ export function calculateDebts(
       const unsettledSplits = expense.expense_splits.filter((s) => !s.is_settled);
       if (unsettledSplits.length === 0) continue;
 
-      // The payer is owed the sum of unsettled splits (not their own)
+      // Determine who paid and how much
+      const payers: ExpensePayer[] = expense.payers && expense.payers.length > 0
+        ? expense.payers
+        : [{ user_id: expense.paid_by, amount: expense.amount }];
+
+      const payerIds = new Set(payers.map((p) => p.user_id));
+
+      // Total unsettled amount owed to payers (excluding payers' own splits)
       const unsettledTotal = unsettledSplits
-        .filter((s) => s.user_id !== expense.paid_by)
+        .filter((s) => !payerIds.has(s.user_id))
         .reduce((sum, s) => sum + s.amount, 0);
 
-      const current = balances.get(expense.paid_by) || 0;
-      balances.set(expense.paid_by, current + unsettledTotal);
+      // Credit each payer proportionally to how much they paid
+      for (const payer of payers) {
+        const payerRatio = expense.amount > 0 ? payer.amount / expense.amount : 0;
+        const credit = unsettledTotal * payerRatio;
+        const current = balances.get(payer.user_id) || 0;
+        balances.set(payer.user_id, current + credit);
+      }
 
-      // Each person in the unsettled splits owes their share (except the payer)
+      // Each person in the unsettled splits owes their share (except payers)
       for (const split of unsettledSplits) {
-        if (split.user_id === expense.paid_by) continue;
+        if (payerIds.has(split.user_id)) continue;
         const bal = balances.get(split.user_id) || 0;
         balances.set(split.user_id, bal - split.amount);
       }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { TripOption, TripMember, FlightWatch, OptionCategory, CurrencyType } from "@/lib/types";
+import type { ExchangeRates } from "@/lib/exchange-rates";
 import { CURRENCIES } from "./constants";
 import OptionCard from "./OptionCard";
 
@@ -14,6 +15,7 @@ interface Props {
   currentUserId: string;
   supabase: SupabaseClient;
   refresh: () => void;
+  exchangeRates?: ExchangeRates | null;
 }
 
 type TransportDirection = "transport_outbound" | "transport_return";
@@ -26,6 +28,7 @@ export default function TransportTab({
   currentUserId,
   supabase,
   refresh,
+  exchangeRates,
 }: Props) {
   const [activeDirection, setActiveDirection] = useState<TransportDirection>("transport_outbound");
   const [showOptionForm, setShowOptionForm] = useState(false);
@@ -286,6 +289,7 @@ export default function TransportTab({
             onVote={() => handleVote(opt.id, opt.votes || [])}
             onDelete={() => handleDeleteOption(opt.id)}
             getOptionCostPerPerson={getOptionCostPerPerson}
+            exchangeRates={exchangeRates}
           />
         ))}
         {directionOptions.length === 0 && !showOptionForm && (

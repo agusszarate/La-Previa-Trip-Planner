@@ -1,6 +1,7 @@
 "use client";
 
-import type { TripOption, TripMember } from "@/lib/types";
+import type { TripOption, TripMember, CurrencyType } from "@/lib/types";
+import { convertToARS, type ExchangeRates } from "@/lib/exchange-rates";
 
 interface OptionCardProps {
   option: TripOption;
@@ -14,6 +15,7 @@ interface OptionCardProps {
   showVote?: boolean;
   showSelect?: boolean;
   getOptionCostPerPerson: (opt: TripOption) => number;
+  exchangeRates?: ExchangeRates | null;
 }
 
 export default function OptionCard({
@@ -28,6 +30,7 @@ export default function OptionCard({
   showVote = true,
   showSelect = true,
   getOptionCostPerPerson,
+  exchangeRates,
 }: OptionCardProps) {
   const hasVoted = (option.votes || []).includes(currentUserId);
   const voteCount = (option.votes || []).length;
@@ -68,24 +71,45 @@ export default function OptionCard({
           )}
         </div>
 
-        {option.price !== null && option.price !== undefined && (
-          <div className="text-right ml-4">
-            <p className="font-bold text-gray-900 dark:text-white">
-              ${option.price.toLocaleString("es-AR")}
-              <span className="text-xs font-normal text-gray-500 dark:text-slate-400 ml-1">
-                {option.currency}
-              </span>
-            </p>
-            {!option.is_per_person && memberCount > 1 && (
-              <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
-                ${getOptionCostPerPerson(option).toLocaleString("es-AR", { minimumFractionDigits: 0 })}/persona
+        {option.price !== null && option.price !== undefined && (() => {
+          const isForex = option.currency !== "ARS" && exchangeRates;
+          const arsTotal = isForex
+            ? convertToARS(option.price, option.currency as CurrencyType, exchangeRates!)
+            : null;
+          const perPerson = getOptionCostPerPerson(option);
+          const arsPerPerson = isForex
+            ? convertToARS(perPerson, option.currency as CurrencyType, exchangeRates!)
+            : null;
+          return (
+            <div className="text-right ml-4 shrink-0">
+              <p className="font-bold text-gray-900 dark:text-white">
+                ${option.price.toLocaleString("es-AR")}{" "}
+                <span className="text-xs font-normal text-gray-500 dark:text-slate-400">
+                  {option.currency}
+                </span>
               </p>
-            )}
-            {option.is_per_person && (
-              <p className="text-xs text-gray-500 dark:text-slate-400">por persona</p>
-            )}
-          </div>
-        )}
+              {arsTotal !== null && (
+                <p className="text-xs text-gray-400 dark:text-slate-500">
+                  ~${arsTotal.toLocaleString("es-AR", { maximumFractionDigits: 0 })} ARS
+                </p>
+              )}
+              {!option.is_per_person && memberCount > 1 && (
+                <p className="text-sm text-blue-600 dark:text-blue-400 font-medium mt-0.5">
+                  ${perPerson.toLocaleString("es-AR", { minimumFractionDigits: 0 })}{" "}
+                  <span className="text-xs font-normal">{option.currency}</span>/persona
+                  {arsPerPerson !== null && (
+                    <span className="block text-xs text-gray-400 dark:text-slate-500 font-normal">
+                      ~${arsPerPerson.toLocaleString("es-AR", { maximumFractionDigits: 0 })} ARS
+                    </span>
+                  )}
+                </p>
+              )}
+              {option.is_per_person && (
+                <p className="text-xs text-gray-500 dark:text-slate-400">por persona</p>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Actions */}

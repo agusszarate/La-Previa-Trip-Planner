@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { TripOption, TripMember, OptionCategory, CurrencyType } from "@/lib/types";
+import type { ExchangeRates } from "@/lib/exchange-rates";
 import { CURRENCIES } from "./constants";
 import OptionCard from "./OptionCard";
 
@@ -16,6 +17,7 @@ interface Props {
   refresh: () => void;
   category: OptionCategory;
   categoryLabel: string;
+  exchangeRates?: ExchangeRates | null;
 }
 
 export default function CategoryOptionsTab({
@@ -27,6 +29,7 @@ export default function CategoryOptionsTab({
   refresh,
   category,
   categoryLabel,
+  exchangeRates,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -238,6 +241,7 @@ export default function CategoryOptionsTab({
             onVote={() => handleVote(opt.id, opt.votes || [])}
             onDelete={() => handleDelete(opt.id)}
             getOptionCostPerPerson={getOptionCostPerPerson}
+            exchangeRates={exchangeRates}
           />
         ))}
         {categoryOptions.length === 0 && !showForm && (

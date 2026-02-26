@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import type { TripOption, OptionCategory, TripMember, SavedCombo } from "@/lib/types";
+import type { TripOption, OptionCategory, TripMember, SavedCombo, CurrencyType } from "@/lib/types";
+import { convertToARS, type ExchangeRates } from "@/lib/exchange-rates";
 import { OPTION_CATEGORIES } from "./trip/constants";
 import OptionCard from "./trip/OptionCard";
 
@@ -12,6 +13,7 @@ interface Props {
   tripId: string;
   currentUserId: string;
   supabase: any;
+  exchangeRates?: ExchangeRates | null;
 }
 
 export default function ComboBuilder({
@@ -20,6 +22,7 @@ export default function ComboBuilder({
   tripId,
   currentUserId,
   supabase,
+  exchangeRates,
 }: Props) {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<OptionCategory | "summary">("summary");
@@ -63,13 +66,22 @@ export default function ComboBuilder({
     return opt.price / memberCount;
   }
 
+  /** Convert amount to ARS if exchange rates available, otherwise return raw */
+  function toARS(amount: number, currency: string): number {
+    if (currency === "ARS" || !exchangeRates) return amount;
+    const converted = convertToARS(amount, currency as CurrencyType, exchangeRates);
+    return converted ?? amount;
+  }
+
+  const hasMultipleCurrencies = new Set(selectedOptions.map((o) => o.currency)).size > 1;
+
   const comboTotalPerPerson = selectedOptions.reduce(
-    (sum, opt) => sum + getOptionCostPerPerson(opt),
+    (sum, opt) => sum + toARS(getOptionCostPerPerson(opt), opt.currency),
     0
   );
 
   const comboTotalGlobal = selectedOptions.reduce(
-    (sum, opt) => sum + (opt.price || 0),
+    (sum, opt) => sum + toARS(opt.price || 0, opt.currency),
     0
   );
 
@@ -190,33 +202,85 @@ export default function ComboBuilder({
           </div>
         )}
 
+        {/* Currency breakdown when multiple currencies */}
+        {hasMultipleCurrencies && (() => {
+          const byCurrency = new Map<string, { total: number; perPerson: number }>();
+          for (const opt of selectedOptions) {
+            const curr = opt.currency || "ARS";
+            const existing = byCurrency.get(curr) || { total: 0, perPerson: 0 };
+            existing.total += opt.price || 0;
+            existing.perPerson += getOptionCostPerPerson(opt);
+            byCurrency.set(curr, existing);
+          }
+          return (
+            <div className="flex flex-wrap gap-3 mb-3">
+              {Array.from(byCurrency.entries()).map(([currency, vals]) => (
+                <div key={currency} className="bg-white/10 rounded-lg px-3 py-2 min-w-[120px]">
+                  <p className="text-blue-200 text-xs font-medium">{currency}</p>
+                  <p className="text-lg font-bold">
+                    ${vals.total.toLocaleString("es-AR", { minimumFractionDigits: 0 })}
+                  </p>
+                  <p className="text-xs text-blue-200/80">
+                    ${vals.perPerson.toLocaleString("es-AR", { minimumFractionDigits: 0 })}/persona
+                  </p>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
+
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-blue-200 text-xs">Total del viaje</p>
+            <p className="text-blue-200 text-xs">
+              {hasMultipleCurrencies && exchangeRates ? "Total en ARS" : "Total del viaje"}
+            </p>
             <p className="text-2xl font-bold">
               ${comboTotalGlobal.toLocaleString("es-AR", { minimumFractionDigits: 0 })}
+              {hasMultipleCurrencies && exchangeRates && (
+                <span className="text-sm font-normal text-blue-200 ml-1">ARS</span>
+              )}
             </p>
           </div>
           <div>
-            <p className="text-blue-200 text-xs">Por persona ({memberCount})</p>
+            <p className="text-blue-200 text-xs">
+              {hasMultipleCurrencies && exchangeRates
+                ? `Por persona (${memberCount}) en ARS`
+                : `Por persona (${memberCount})`}
+            </p>
             <p className="text-2xl font-bold">
               ${comboTotalPerPerson.toLocaleString("es-AR", { minimumFractionDigits: 0 })}
+              {hasMultipleCurrencies && exchangeRates && (
+                <span className="text-sm font-normal text-blue-200 ml-1">ARS</span>
+              )}
             </p>
           </div>
         </div>
+        {hasMultipleCurrencies && exchangeRates && (
+          <p className="text-xs text-blue-200/70 mt-1">Convertido con cotización dólar blue</p>
+        )}
         {selectedOptions.length > 0 && (
           <div className="mt-4 pt-3 border-t border-white/20 space-y-1">
-            {selectedOptions.map((opt) => (
-              <div key={opt.id} className="flex justify-between text-sm">
-                <span className="text-blue-100">
-                  {OPTION_CATEGORIES.find((c) => c.value === opt.category)?.icon}{" "}
-                  {opt.name}
-                </span>
-                <span className="font-medium">
-                  ${getOptionCostPerPerson(opt).toLocaleString("es-AR", { minimumFractionDigits: 0 })}/persona
-                </span>
-              </div>
-            ))}
+            {selectedOptions.map((opt) => {
+              const perPerson = getOptionCostPerPerson(opt);
+              const perPersonARS = toARS(perPerson, opt.currency);
+              const showConversion = opt.currency !== "ARS" && exchangeRates;
+              return (
+                <div key={opt.id} className="flex justify-between text-sm gap-2">
+                  <span className="text-blue-100">
+                    {OPTION_CATEGORIES.find((c) => c.value === opt.category)?.icon}{" "}
+                    {opt.name}
+                  </span>
+                  <span className="font-medium text-right shrink-0">
+                    ${perPerson.toLocaleString("es-AR", { minimumFractionDigits: 0 })} {opt.currency}/pp
+                    {showConversion && (
+                      <span className="text-blue-200 text-xs block">
+                        ~${perPersonARS.toLocaleString("es-AR", { maximumFractionDigits: 0 })} ARS
+                      </span>
+                    )}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -335,6 +399,7 @@ export default function ComboBuilder({
                       onVote={() => handleVote(opt.id, opt.votes || [])}
                       showDelete={false}
                       getOptionCostPerPerson={getOptionCostPerPerson}
+                      exchangeRates={exchangeRates}
                     />
                   ))}
                 </div>
