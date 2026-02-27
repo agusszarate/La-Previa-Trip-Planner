@@ -10,7 +10,6 @@ import CategoryOptionsTab from "./trip/CategoryOptionsTab";
 import TransportTab from "./trip/TransportTab";
 import PreviewTab from "./trip/PreviewTab";
 import { TABS } from "./trip/constants";
-import Link from "next/link";
 import type {
   Trip,
   TripMember,
@@ -137,22 +136,9 @@ export default function TripDetail({
           </div>
         </div>
 
-        {/* Quick links */}
-        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-blue-200/40 dark:border-slate-600">
-          <span className="text-xs text-gray-500 dark:text-slate-400 self-center mr-1">👥 {members.length} miembros</span>
-          <Link
-            href={`/trips/${trip.id}/members`}
-            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-          >
-            Ver miembros →
-          </Link>
-          <span className="text-gray-300 dark:text-slate-600 mx-1">·</span>
-          <Link
-            href={`/trips/${trip.id}/expenses`}
-            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-          >
-            Ver gastos →
-          </Link>
+        {/* Member count */}
+        <div className="mt-4 pt-4 border-t border-blue-200/40 dark:border-slate-600">
+          <span className="text-xs text-gray-500 dark:text-slate-400">👥 {members.length} miembros</span>
         </div>
       </div>
 
