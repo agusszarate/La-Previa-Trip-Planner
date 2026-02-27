@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import TripDetail from "@/components/TripDetail";
+import ChecklistPageClient from "./ChecklistPageClient";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function TripPage({ params }: Props) {
+export default async function ChecklistPage({ params }: Props) {
   const { id } = await params;
   const supabase = await createClient();
 
@@ -17,7 +17,7 @@ export default async function TripPage({ params }: Props) {
 
   const { data: trip } = await supabase
     .from("trips")
-    .select("*")
+    .select("id")
     .eq("id", id)
     .single();
 
@@ -28,31 +28,17 @@ export default async function TripPage({ params }: Props) {
     .select("*, profiles(*)")
     .eq("trip_id", id);
 
-  const { data: expenses } = await supabase
-    .from("expenses")
-    .select("*, profiles:paid_by(id, display_name, email), expense_splits(*)")
-    .eq("trip_id", id)
-    .order("created_at", { ascending: false });
-
-  const { data: flights } = await supabase
-    .from("flights_watchlist")
-    .select("*")
-    .eq("trip_id", id)
-    .order("created_at", { ascending: false });
-
-  const { data: tripOptions } = await supabase
-    .from("trip_options")
-    .select("*")
+  const { data: checklist } = await supabase
+    .from("checklist_items")
+    .select("*, profiles:assigned_to(id, display_name, email)")
     .eq("trip_id", id)
     .order("created_at", { ascending: true });
 
   return (
-    <TripDetail
-      trip={trip}
+    <ChecklistPageClient
+      checklist={checklist || []}
       members={members || []}
-      expenses={expenses || []}
-      flights={flights || []}
-      tripOptions={tripOptions || []}
+      tripId={id}
       currentUserId={user.id}
     />
   );
