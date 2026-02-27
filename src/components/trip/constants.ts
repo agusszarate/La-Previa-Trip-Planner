@@ -10,8 +10,6 @@ export const TABS = [
   { id: "food", label: "Comida", icon: "🍕" },
   { id: "activities", label: "Actividades", icon: "🎯" },
   { id: "other", label: "Otros", icon: "📦" },
-  { id: "expenses", label: "Gastos", icon: "💰" },
-  { id: "checklist", label: "Checklist", icon: "✅" },
 ] as const;
 
 export const CATEGORIES: { value: ExpenseCategory; label: string }[] = [

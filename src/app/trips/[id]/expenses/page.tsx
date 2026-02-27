@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import TripDetail from "@/components/TripDetail";
+import { calculateDebts } from "@/lib/debts";
+import ExpensesPageClient from "./ExpensesPageClient";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function TripPage({ params }: Props) {
+export default async function ExpensesPage({ params }: Props) {
   const { id } = await params;
   const supabase = await createClient();
 
@@ -17,7 +18,7 @@ export default async function TripPage({ params }: Props) {
 
   const { data: trip } = await supabase
     .from("trips")
-    .select("*")
+    .select("id")
     .eq("id", id)
     .single();
 
@@ -34,25 +35,18 @@ export default async function TripPage({ params }: Props) {
     .eq("trip_id", id)
     .order("created_at", { ascending: false });
 
-  const { data: flights } = await supabase
-    .from("flights_watchlist")
-    .select("*")
-    .eq("trip_id", id)
-    .order("created_at", { ascending: false });
-
-  const { data: tripOptions } = await supabase
-    .from("trip_options")
-    .select("*")
-    .eq("trip_id", id)
-    .order("created_at", { ascending: true });
+  const memberInfos = (members || []).map((m) => ({
+    id: m.user_id,
+    name: m.profiles?.display_name || m.profiles?.email || "?",
+  }));
+  const debts = calculateDebts(expenses || [], memberInfos);
 
   return (
-    <TripDetail
-      trip={trip}
-      members={members || []}
+    <ExpensesPageClient
       expenses={expenses || []}
-      flights={flights || []}
-      tripOptions={tripOptions || []}
+      members={members || []}
+      debts={debts}
+      tripId={id}
       currentUserId={user.id}
     />
   );
