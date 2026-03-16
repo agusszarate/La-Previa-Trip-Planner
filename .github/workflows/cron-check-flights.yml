@@ -11,6 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger flight check cron
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          curl -s -o /dev/null -w "%{http_code}" \
-            "${{ secrets.APP_URL }}/api/cron?secret=${{ secrets.CRON_SECRET }}"
+          if [ -z "$APP_URL" ]; then
+            echo "::error::APP_URL secret is not set"
+            exit 1
+          fi
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
+            "${APP_URL}/api/cron?secret=${CRON_SECRET}")
+          echo "HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "::error::Flight check failed with HTTP status $HTTP_STATUS"
+            exit 1
+          fi
