@@ -19,10 +19,21 @@ jobs:
             echo "::error::APP_URL secret is not set"
             exit 1
           fi
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
+          RESPONSE=$(curl -s -w "\n%{http_code}" --max-time 30 \
             "${APP_URL}/api/cron?secret=${CRON_SECRET}")
+          HTTP_STATUS=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
           echo "HTTP Status: $HTTP_STATUS"
+          echo "Response: $BODY"
           if [ "$HTTP_STATUS" -ne 200 ]; then
             echo "::error::Flight check failed with HTTP status $HTTP_STATUS"
             exit 1
+          fi
+          # Parse results summary
+          CHECKED=$(echo "$BODY" | jq -r '.checked // 0')
+          ERRORS=$(echo "$BODY" | jq '[.results[]? | select(.status == "error")] | length')
+          echo "::notice::Checked $CHECKED watches, $ERRORS errors"
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::warning::Some flight checks had errors"
+            echo "$BODY" | jq '.results[] | select(.status == "error")'
           fi
