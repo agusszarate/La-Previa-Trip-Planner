@@ -2,6 +2,8 @@
 
 Platform for organizing trips with friends. Shared expenses, flight tracking, accommodations, and more.
 
+Live at [laprevia.zarate.website](https://laprevia.zarate.website).
+
 ## Stack
 
 - **Frontend + API**: Next.js 16 (App Router) on Vercel
@@ -28,12 +30,12 @@ cp .env.local.example .env.local
 ```
 
 Fill in your credentials:
-- `NEXT_PUBLIC_SUPABASE_URL` — Your Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase anon key
-- `GMAIL_USER` — Your Gmail email
-- `GMAIL_APP_PASSWORD` — Gmail app password (requires 2FA enabled)
-- `CRON_SECRET` — Random string to protect the cron endpoint
-- `KIWI_API_KEY` — (Optional) Kiwi Tequila API key for flights
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon key
+- `GMAIL_USER`: Your Gmail email
+- `GMAIL_APP_PASSWORD`: Gmail app password (requires 2FA enabled)
+- `CRON_SECRET`: Random string to protect the cron endpoint
+- `KIWI_API_KEY`: (Optional) Kiwi Tequila API key for flights
 
 ### 3. Gmail App Password
 
@@ -60,8 +62,8 @@ Configure environment variables in the Vercel dashboard.
 ### 6. GitHub Actions (Cron)
 
 In your GitHub repo, add these secrets:
-- `APP_URL` — Your Vercel app URL (e.g., https://la-previa.vercel.app)
-- `CRON_SECRET` — Same string as in `.env.local`
+- `APP_URL`: Your Vercel app URL (e.g., https://la-previa.vercel.app)
+- `CRON_SECRET`: Same string as in `.env.local`
 
 ## Features
 
@@ -72,3 +74,7 @@ In your GitHub repo, add these secrets:
 - **Flights**: Price alerts with daily checking
 - **Checklist**: Assignable packing list
 - **Combo builder**: Compare and vote on trip options by category
+
+## License
+
+[MIT](LICENSE)
